@@ -25,11 +25,6 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // Allow requests from Catalyst Appsail
-    if (origin.includes('.catalystappsail.')) {
-      return callback(null, true);
-    }
-    
     // Allow requests from Render
     if (origin.includes('.onrender.com')) {
       return callback(null, true);
@@ -72,7 +67,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-if (!process.env.CATALYST) {
+if (true) {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
