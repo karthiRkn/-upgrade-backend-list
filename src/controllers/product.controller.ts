@@ -4,7 +4,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 
 export const getAllProducts = async (req: AuthRequest, res: Response) => {
   try {
-    const { category, search, sort = 'createdAt', order = 'desc' } = req.query;
+    const { category, search, sort = 'createdAt', order = 'desc' } = (req as Request).query;
     
     const where: any = {};
     
@@ -54,7 +54,7 @@ export const getAllProducts = async (req: AuthRequest, res: Response) => {
 
 export const getProductById = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = (req as Request).params;
 
     const product = await prisma.product.findUnique({
       where: { id },
@@ -107,7 +107,7 @@ export const getProductById = async (req: AuthRequest, res: Response) => {
 
 export const createProduct = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, tagline, description, website, logo, images, category } = req.body;
+    const { name, tagline, description, website, logo, images, category } = (req as Request).body;
 
     if (!name || !tagline || !description || !website || !category) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -140,7 +140,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
 
 export const voteProduct = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = (req as Request).params;
 
     // Check if already voted
     const existingVote = await prisma.vote.findUnique({
@@ -201,8 +201,8 @@ export const voteProduct = async (req: AuthRequest, res: Response) => {
 
 export const addComment = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
-    const { content, parentId } = req.body;
+    const { id } = (req as Request).params;
+    const { content, parentId } = (req as Request).body;
 
     if (!content) {
       return res.status(400).json({ error: 'Content is required' });

@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { AuthRequest } from '../middleware/auth.middleware';
 
@@ -37,7 +37,7 @@ export const getMyList = async (req: AuthRequest, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, bio, avatar } = req.body;
+    const { name, bio, avatar } = (req as Request).body;
 
     const user = await prisma.user.update({
       where: { id: req.userId! },
