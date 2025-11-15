@@ -11,7 +11,43 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost requests
+    if (origin.startsWith('http://localhost:') || origin.startsWith('https://localhost:')) {
+      return callback(null, true);
+    }
+    
+    // Allow requests from Firebase hosting
+    if (origin.endsWith('.web.app') || origin.endsWith('.firebaseapp.com')) {
+      return callback(null, true);
+    }
+    
+    // Allow requests from Catalyst Appsail
+    if (origin.includes('.catalystappsail.')) {
+      return callback(null, true);
+    }
+    
+    // Allow requests from Render
+    if (origin.includes('.onrender.com')) {
+      return callback(null, true);
+    }
+    
+    // Check against FRONTEND_URL environment variable
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+      return callback(null, true);
+    }
+    
+    // For development, log the origin for debugging
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Blocked CORS origin:', origin);
+    }
+    
+    // Block other origins
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -36,8 +72,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
-
+if (!process.env.CATALYST) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
 export default app;
