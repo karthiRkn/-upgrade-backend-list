@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "npm install --include=dev && tsc && prisma generate",
-    "prepare": "npm run build",
+    "build": "tsc && prisma generate",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
